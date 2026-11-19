@@ -1,0 +1,80 @@
+{
+  "model": {
+    "name": "PolarDehazeNet",
+    "raw_in_channels": 4,
+    "phys_in_channels": 6,
+    "num_encoder_levels": 3,
+    "base_channels": 32,
+    "channel_multipliers": [
+      1,
+      2,
+      4
+    ],
+    "fusion_type": "dual_expert_dynamic",
+    "fusion_shared_weights": false,
+    "fusion_feedback_to_raw": true,
+    "detail_type": "none",
+    "raw_detail_type": "none",
+    "post_fusion_detail_type": "legacy",
+    "bottleneck_detail_type": "none",
+    "decoder_detail_type": "legacy",
+    "use_lpm": false,
+    "use_global_attn": false,
+    "global_attention_type": "none",
+    "use_disagreement_refiner": false,
+    "disagreement_residual_scale": [
+      0.25,
+      0.15,
+      0.15
+    ],
+    "bottleneck_pairs": 1,
+    "use_physics_head": false,
+    "use_physics_adapter": false,
+    "decouple_phys_grad": false,
+    "beta_min": 0.05,
+    "beta_max": 3.0,
+    "use_residual_t": false,
+    "residual_t_min": 0.1,
+    "residual_t_max": 3.0,
+    "transmission_min": 0.05,
+    "return_diagnostics": false,
+    "gradient_mediation": "coupled",
+    "gamma_static": 0.1,
+    "gamma_max": 0.5,
+    "gradient_ema_momentum": 0.9,
+    "pcgrad_rho": 1.0,
+    "pcgrad_lambda_max": 1.0,
+    "rehaze_type": "none",
+    "activation": "gelu",
+    "norm_groups": 8,
+    "gradient_checkpointing": false,
+    "global_attention_positions": [],
+    "boundary_guidance_type": "none",
+    "boundary_guidance_positions": [],
+    "boundary_dynamic_upsample": false,
+    "dhde_positions": [],
+    "dhde_residual_scale": 0.25,
+    "pgde": {
+      "mode": "iterative_shared",
+      "hidden_channels": 32,
+      "residual_scales": [
+        0.25,
+        0.25,
+        0.25
+      ],
+      "lowpass_kernel": 15,
+      "iterations": 2
+    }
+  },
+  "data": {
+    "phys_channels": 6,
+    "phys_normalize_s0": false,
+    "input_mode": "polar_dual_stream"
+  },
+  "normalization": {
+    "protocol": "v3_scene_total_stokes_unit",
+    "s0_max": 1.0,
+    "angle_png_divisor": 65535,
+    "renormalize_on_load": false
+  }
+}

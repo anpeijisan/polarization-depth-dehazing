@@ -1,0 +1,362 @@
+{
+  "model": "PolarDehaze V3",
+  "source_project": "D:\\WXY\\Script2025\\poldehazeV3",
+  "source_checkpoint": "D:\\WXY\\Script2025\\poldehazeV3\\imported\\visualization_0005211_current\\Ours.pt",
+  "source_checkpoint_sha256": "247bb8e3de965c89e6768caf0147435e4018f3373c0b1d534c138e2619103524",
+  "epoch": 50,
+  "global_step": 30900,
+  "experiment": {
+    "task": "stokes_restoration",
+    "runnable": true,
+    "name": "ablation_v3_a11_full",
+    "group": "ours_v3",
+    "description": "Exact ours.pt model and training settings with V3 unit-total Stokes data protocol"
+  },
+  "checkpoint_metrics": {
+    "best_metric": 41.89157598812324,
+    "monitor_metric": "val_psnr",
+    "best_validation": {
+      "val_psnr": 41.89157598812324,
+      "val_ssim": 0.9915019188884007,
+      "val_dolp_psnr": 30.350903836281727,
+      "val_dolp_ssim": 0.964672950479205,
+      "val_pgde_coarse_s0_psnr": 40.660261388555895,
+      "val_pgde_coarse_dolp_psnr": 25.075386795901363,
+      "val_pgde_step1_s0_psnr": 41.33693199982637,
+      "val_pgde_step1_dolp_psnr": 29.39893343797174,
+      "val_s0_lpips": 0.007911990857630377
+    }
+  },
+  "weight_export": "Exact state_dict plus portable model/data configuration; optimizer/scheduler/scaler removed",
+  "exported_weights_identical": true,
+  "source_file_count": 47,
+  "verified_environment": {
+    "torch": "2.2.2+cu118",
+    "numpy": "1.26.4",
+    "Pillow": "10.2.0",
+    "PyYAML": "6.0.3",
+    "scipy": "1.13.1"
+  },
+  "original_config": {
+    "data": {
+      "name": "rte_v5",
+      "data_root": "/root/rivermind-fs/poldehazeV3/data",
+      "manifest_dir": "manifests/rte_v5",
+      "image_sizes": [
+        256
+      ],
+      "eval_resolutions": [
+        256
+      ],
+      "phys_channels": 6,
+      "phys_normalize_s0": false,
+      "load_physics_targets": false,
+      "batch_size": 8,
+      "eval_batch_size": 8,
+      "num_workers": 8,
+      "drop_last": true,
+      "input_mode": "polar_dual_stream",
+      "augment": {
+        "enabled": false,
+        "hflip": true,
+        "vflip": false,
+        "rotation": 90
+      }
+    },
+    "evaluation": {
+      "s0_max_val": 1.0,
+      "aop_min_gt_dolp": 0.05,
+      "aop_sensitivity_thresholds": [
+        0.01,
+        0.05,
+        0.1
+      ],
+      "bootstrap_samples": 2000,
+      "bootstrap_seed": 20260711,
+      "lpips": {
+        "enabled": true,
+        "net": "alex"
+      }
+    },
+    "model": {
+      "name": "PolarDehazeNet",
+      "raw_in_channels": 4,
+      "phys_in_channels": 6,
+      "num_encoder_levels": 3,
+      "base_channels": 32,
+      "channel_multipliers": [
+        1,
+        2,
+        4
+      ],
+      "fusion_type": "dual_expert_dynamic",
+      "fusion_shared_weights": false,
+      "fusion_feedback_to_raw": true,
+      "detail_type": "none",
+      "raw_detail_type": "none",
+      "post_fusion_detail_type": "legacy",
+      "bottleneck_detail_type": "none",
+      "decoder_detail_type": "legacy",
+      "use_lpm": false,
+      "use_global_attn": false,
+      "global_attention_type": "none",
+      "use_disagreement_refiner": false,
+      "disagreement_residual_scale": [
+        0.25,
+        0.15,
+        0.15
+      ],
+      "bottleneck_pairs": 1,
+      "use_physics_head": false,
+      "use_physics_adapter": false,
+      "decouple_phys_grad": false,
+      "beta_min": 0.05,
+      "beta_max": 3.0,
+      "use_residual_t": false,
+      "residual_t_min": 0.1,
+      "residual_t_max": 3.0,
+      "transmission_min": 0.05,
+      "return_diagnostics": false,
+      "gradient_mediation": "coupled",
+      "gamma_static": 0.1,
+      "gamma_max": 0.5,
+      "gradient_ema_momentum": 0.9,
+      "pcgrad_rho": 1.0,
+      "pcgrad_lambda_max": 1.0,
+      "rehaze_type": "none",
+      "activation": "gelu",
+      "norm_groups": 8,
+      "gradient_checkpointing": false,
+      "global_attention_positions": [],
+      "boundary_guidance_type": "none",
+      "boundary_guidance_positions": [],
+      "boundary_dynamic_upsample": false,
+      "dhde_positions": [],
+      "dhde_residual_scale": 0.25,
+      "pgde": {
+        "mode": "iterative_shared",
+        "hidden_channels": 32,
+        "residual_scales": [
+          0.25,
+          0.25,
+          0.25
+        ],
+        "lowpass_kernel": 15,
+        "iterations": 2
+      }
+    },
+    "train": {
+      "epochs": 50,
+      "optimizer": {
+        "name": "AdamW",
+        "lr": 0.0002,
+        "weight_decay": 0.0001,
+        "betas": [
+          0.9,
+          0.999
+        ]
+      },
+      "scheduler": {
+        "name": "CosineAnnealingLR",
+        "interval": "epoch",
+        "T_max": 50,
+        "eta_min": 1e-06
+      },
+      "amp": {
+        "enabled": true,
+        "dtype": "float16",
+        "init_scale": 1024.0,
+        "growth_factor": 2.0,
+        "backoff_factor": 0.5,
+        "growth_interval": 2000
+      },
+      "gradient_accumulation_steps": 1,
+      "max_grad_norm": 1.0,
+      "compile": {
+        "enabled": true,
+        "mode": "default"
+      },
+      "gradient_conflict_monitor": false,
+      "monitor_metric": "val_psnr",
+      "monitor_mode": "max",
+      "loss_weights": {
+        "L_S0": 1.0,
+        "L_S0_mse": 10.0,
+        "L_cdrf_target_s0": 0.0,
+        "L_cdrf_target_s0_mse": 0.0,
+        "L_cdrf_target_s12": 0.0,
+        "L_cdrf_base_s0": 0.0,
+        "L_cdrf_base_s12": 0.0,
+        "L_S12": 0.5,
+        "L_angle": 0.0,
+        "L_SSIM": 0.1,
+        "L_illum": 0.0,
+        "L_CQ": 0.0,
+        "L_polar_cosine": 0.0,
+        "L_asm_s0": 0.0,
+        "L_asm_s12": 0.0,
+        "L_asm_cons": 0.0,
+        "L_dolp": 0.2,
+        "L_far": 0.0,
+        "L_t_tv": 0.0,
+        "L_t_edge": 0.0,
+        "L_specular": 0.0,
+        "L_a_ceiling": 0.0,
+        "L_a_dcp": 0.0,
+        "L_t_gt": 0.0,
+        "L_d_gt": 0.0,
+        "L_d_log": 0.0,
+        "L_beta_gt": 0.0,
+        "L_a_gt": 0.0,
+        "L_a_inf_map": 0.0,
+        "L_d_hazy_aux": 0.0,
+        "L_r_reg": 0.0,
+        "L_dolp_overshoot": 0.0,
+        "L_rehaze_s0": 0.0,
+        "L_rehaze_s12": 0.0,
+        "L_rehaze_cons": 0.0,
+        "L_S0_ms_ssim": 0.0,
+        "L_veil": 0.0,
+        "L_dolp_ssim": 0.05,
+        "L_pgde_coarse": 0.25,
+        "L_pgde_residual": 0.0,
+        "L_pgde_safe": 0.0,
+        "L_pgde_low": 0.0,
+        "L_pgde_high": 0.0,
+        "L_pgde_step1": 0.1,
+        "L_pgde_step2": 0.1,
+        "L_pgde_monotonic": 0.1,
+        "L_pgde_high_conf": 0.0,
+        "L_pgde_direction": 0.1,
+        "L_pgde_dolp": 0.05,
+        "L_pgde_angle_safe": 0.1
+      },
+      "physics_gt": {
+        "beta_target": "extinction",
+        "airlight_target": "polar",
+        "downsample_scale": 4,
+        "depth_far_weight": 0.0,
+        "depth_far_threshold": 0.6,
+        "d_hazy_weight": 0.0,
+        "residual_t_reg_weight": 0.0,
+        "dolp_overshoot_weight": 0.0
+      },
+      "disable_specular": false,
+      "vis_every_epochs": 0,
+      "vis_samples": 4,
+      "save_every_epochs": 10,
+      "keep_last_n": 0,
+      "restoration_loss": {
+        "sky_weight": 1.0,
+        "fog_level_weights": {
+          "light": 1.0,
+          "medium": 1.0,
+          "heavy": 1.0
+        },
+        "ssim_kernel_sizes": [
+          7,
+          15,
+          31
+        ],
+        "dolp_ssim_kernel_sizes": [
+          7,
+          15,
+          31
+        ],
+        "veil_pool_sizes": [
+          8,
+          16,
+          32
+        ],
+        "veil_scale_weights": [
+          0.5,
+          0.3,
+          0.2
+        ]
+      },
+      "pgde_angle_min_gt_dolp": 0.05
+    },
+    "runtime": {
+      "device": "cuda",
+      "deterministic": true,
+      "deterministic_warn_only": true,
+      "allow_tf32": false,
+      "project_root": "/root/rivermind-fs/poldehazeV3",
+      "data_root": "/root/rivermind-fs/poldehazeV3/data",
+      "outputs_root": "/root/rivermind-fs/poldehazeV3/outputs"
+    },
+    "seed": 42,
+    "experiment": {
+      "task": "stokes_restoration",
+      "runnable": true,
+      "name": "ablation_v3_a11_full",
+      "group": "ours_v3",
+      "description": "Exact ours.pt model and training settings with V3 unit-total Stokes data protocol"
+    },
+    "final_selection": null,
+    "normalization": {
+      "protocol": "v3_scene_total_stokes_unit",
+      "s0_max": 1.0,
+      "angle_png_divisor": 65535,
+      "renormalize_on_load": false
+    }
+  },
+  "files_sha256": {
+    "config.json": "e50f99b2683695e39629b923a1703b0b8c7cee99e7bebe35ea4100e5c88129a1",
+    "infer.py": "de483e68b99727df8daaf2a957374a07d5c19ce651a036c48a78b3a2d6a366d6",
+    "README.md": "3bf3916f854c305696b7e3bcc1defd9a9e214db73a5b013324488881f489c4ba",
+    "requirements.txt": "0d8d2c92e1d15952e95abf84304d1bcdfe377e6798bd2140abce2ea7ba9e3ee5",
+    "examples/input/0/0005211__heavy.png": "458d51e508acb03fba386b47afd8490138ddf783a17f94334b7910a312c8f48d",
+    "examples/input/135/0005211__heavy.png": "ff802a8dd154ccf650b14bc0b0b00f79ecc0f5a2051990cdbb9136eb134507dd",
+    "examples/input/45/0005211__heavy.png": "496137ff247b9f0bdab925f8fc404a1e709c9aa593a4a72c667f1b0919e7ecb1",
+    "examples/input/90/0005211__heavy.png": "00a8e753dddc19f00912fda3ed762bc79cd52c4c989ac7553e3a8e97d1e233e5",
+    "src/poldehaze_v2/config.py": "241e009c955ab62f29e378d503f38ea1aa0b938b0348917dde2f911e41ad2435",
+    "src/poldehaze_v2/paths.py": "4b4d7cb8eb1c23d0ba6d8fc3f3cffbe1f641722e3dce6fdb44fd541d68842ca7",
+    "src/poldehaze_v2/__init__.py": "bd708de0ab14efefe798f97354ff304119c465237b75b063ddb49d312a89008b",
+    "src/poldehaze_v2/data/acquisition_pipeline.py": "5420320e63ef04efd23b25afbe7f16e0ca838b546efe7272bacccac2ffe1233e",
+    "src/poldehaze_v2/data/dataset.py": "83e525e9be5e40f6bb52f07f3de655501f1e71a548517e288545a7bb4e86af97",
+    "src/poldehaze_v2/data/io.py": "5f1bd82c2d34eb26a7bb954a5739bf0b4f0e11968eedc8e611b3bb8a1107e22a",
+    "src/poldehaze_v2/data/manifest.py": "dbf8e48360acd07c6a0195488d7c645312e43c07141f18e10ec63444049cab27",
+    "src/poldehaze_v2/data/polarlitis.py": "722f73ffa2e3819aeb30f0d74fd81d7204e6fa47fbadc9217a1138dc8e0e03ba",
+    "src/poldehaze_v2/data/polar_features.py": "1d811de6d2823e464ce282a3c9c37d36f87c1e81123344125b9d0ca72667f1bd",
+    "src/poldehaze_v2/data/streaming.py": "dcfa6bab58bae27dfec7e74872a596bdd291b8a2d5fd103d4fcb2cbdb17b9248",
+    "src/poldehaze_v2/data/__init__.py": "075178a04c9de327f80be8cdb6894b103123729319141b3a2796adc4966f8ba9",
+    "src/poldehaze_v2/models/attention.py": "fed4ac87cd173654e453fe85e2ac8cd3895b0d9127019fce4e248fb7068bb5cd",
+    "src/poldehaze_v2/models/boundary.py": "f9aa1527c00e49a225b268155ef2ec68c78d416dd2a5cd256b5806b96d952404",
+    "src/poldehaze_v2/models/common.py": "55e17d9a22829474b5bed922cda02913837cda7e185c92357322c486e3a5858d",
+    "src/poldehaze_v2/models/decoder.py": "2aebbe07514eb9b32724022e26a947f8ebf4598d88ed5528c8bcdb34dfe77c74",
+    "src/poldehaze_v2/models/detail.py": "ecb454999a37792389744f62a26614b570e1ad3c3240d435fe67978d2b539bf6",
+    "src/poldehaze_v2/models/encoders.py": "978528b55f3f958d448bc181c6999c8f743b2856907aa9ba43f9320f7657bde1",
+    "src/poldehaze_v2/models/hard_region.py": "3d90bf4def0f0f62391f7b794d8c8e739cd880913cae7ee857063706f02b9486",
+    "src/poldehaze_v2/models/heads.py": "9b08ac3a5a916edfee6bf240c0e5483774068630e0d62a6c46276e2d914cf626",
+    "src/poldehaze_v2/models/independent_stream.py": "0cdc1a396f7f8b0088749d24e169846a2e27325e6690283836e8ea16efe52663",
+    "src/poldehaze_v2/models/late_fusion.py": "66df10c02cc8c621ef55e43a2c1a7d85ec036593a195c3813548c4cff6ceb3d9",
+    "src/poldehaze_v2/models/network.py": "dc59b9d75997b9e8c6613ff4f35d64ab2be8b291bfaeda949bb10e97be9e6b0f",
+    "src/poldehaze_v2/models/pgde.py": "3fb922a226354923010774968f6e545907619bd4f152cec4006707e094975a9f",
+    "src/poldehaze_v2/models/__init__.py": "b04fd2055ea6ec3735cef7210370b046e3b900a27a206fe37b850a2cd6acf351",
+    "src/poldehaze_v2/models/fusion/base.py": "ee57eff3db5443572d6adf577f1106a933c526cbf2bfe75510d4f15fdf3e7f0e",
+    "src/poldehaze_v2/models/fusion/channel_gate.py": "e9ab4cac6f7e11d933ae9d3813e232c811b7de2c3bc663e366ee3c18bc522670",
+    "src/poldehaze_v2/models/fusion/complementary_patch.py": "af37fdce66698976a28cd96188e61b69ea384e1bf55b202897480407b1a944eb",
+    "src/poldehaze_v2/models/fusion/cross_attention.py": "2d81381a84f5b7ab229ca039967b825254255a0b7969484bd752551206623e94",
+    "src/poldehaze_v2/models/fusion/dual_expert.py": "b5973c10dc3ef5230f4af06d17db9b4da14cf7f0b0056ef54de53484a9a63051",
+    "src/poldehaze_v2/models/fusion/output_expert.py": "0b41188100198444a2566da6910ea3cb021faec018addca333d53d522fae2cc3",
+    "src/poldehaze_v2/models/fusion/patch_expert.py": "2659fc682ad8d8f0087c079579ca78d2a6232bb1dc8e4899457f044a6afd93af",
+    "src/poldehaze_v2/models/fusion/polar_frequency.py": "75ced0f7d75ecb693ec7f7ef732a7c45def265b564de6eff4fee378ac6d6fbaf",
+    "src/poldehaze_v2/models/fusion/prgf.py": "34027f863d6c00820c9feb4ad85e77c1f55146d0e7eba2eb402a04345e8bb85b",
+    "src/poldehaze_v2/models/fusion/simple.py": "ceba8c394c48f3019850412c99e4ff625b4cfc5ae05808cadacddcd3de6cd209",
+    "src/poldehaze_v2/models/fusion/spatial_gate.py": "c004e559b04da544e5de82612cd2275218e44d56a63389cb5d6e10157eba5884",
+    "src/poldehaze_v2/models/fusion/standard.py": "174c72755852215d34ad4356e7e8e59dcecb437dfd088e749391ed6022c579a4",
+    "src/poldehaze_v2/models/fusion/__init__.py": "ab50a85f9a74e8382783eef2fa91557b4fbbae683b634fd851e11a33bdbb7957",
+    "src/poldehaze_v2/optimization/conflict_monitor.py": "8b43107a4d589a3d20bd4178cf412767652dd0f67306a2861064ac2350fcaa85",
+    "src/poldehaze_v2/optimization/gradient_mediator.py": "785213bd6139f90af701ca4457951dbdebedd24f6ae6736b102fdd30fc93b71b",
+    "src/poldehaze_v2/optimization/grad_scale.py": "accbdacb1ea7cd56a444e49c1ec9f99af191ae0ed685669e67f295b1635a9390",
+    "src/poldehaze_v2/optimization/__init__.py": "a271fee9a29f49ed10f094f09e82233ce43980090328d9016d769f8d7c6001a8",
+    "src/poldehaze_v2/physics/airlight.py": "9449dfd077d7e907ef3fb8ed726b3adfd1fcfee7673d170eacbb07c29a9dbe0c",
+    "src/poldehaze_v2/physics/rehaze.py": "ee31b89f9414699123d57c8db3d7fd42a0426d18b3331867be227aee23102372",
+    "src/poldehaze_v2/physics/stokes.py": "c7b020e81052580b3a978aa0d0e8682d010c6e8442191c658ba484ea6b3b2bdf",
+    "src/poldehaze_v2/physics/transmission.py": "44bd95e77558dd154197c6d14dd72e739b18edbaa2dc4ccf862da61a2b9cb613",
+    "src/poldehaze_v2/physics/video_atmosphere.py": "d54dd5aa111ab653adba96bb82f65c7beaae430828a1ac01479983858fd9af97",
+    "src/poldehaze_v2/physics/__init__.py": "89f08ab25ebb1450532ee42b901da49bad3de9e08cecfde2be2f5e91f813d13b",
+    "weights/poldehazeV3_final.pt": "7a44aca7de66b878dded6246b299ec18177cf24cb510e6da76228aeb3d7e634e"
+  }
+}
